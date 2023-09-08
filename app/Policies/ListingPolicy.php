@@ -1,22 +1,17 @@
 <?php
-
 namespace App\Policies;
-
 use App\Models\Listing;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-
 class ListingPolicy
 {
     use HandlesAuthorization;
-
     public function before(?User $user, $ability)
     {
         if ($user?->is_admin /*&& $ability === 'update'*/) {
             return true;
         }
     }
-
     /**
      * Determine whether the user can view any models.
      *
@@ -27,7 +22,6 @@ class ListingPolicy
     {
         return true;
     }
-
     /**
      * Determine whether the user can view the model.
      *
@@ -37,7 +31,11 @@ class ListingPolicy
      */
     public function view(?User $user, Listing $listing)
     {
-        return true;
+        if ($listing->by_user_id === $user?->id) {
+            return true;
+        }
+
+        return $listing->sold_at === null;
     }
 
     /**
@@ -50,7 +48,6 @@ class ListingPolicy
     {
         return true;
     }
-
     /**
      * Determine whether the user can update the model.
      *
@@ -60,7 +57,8 @@ class ListingPolicy
      */
     public function update(User $user, Listing $listing)
     {
-        return $user->id === $listing->by_user_id;
+        return $listing->sold_at === null
+            && ($user->id === $listing->by_user_id);
     }
 
     /**
@@ -74,7 +72,6 @@ class ListingPolicy
     {
         return $user->id === $listing->by_user_id;
     }
-
     /**
      * Determine whether the user can restore the model.
      *
@@ -86,7 +83,6 @@ class ListingPolicy
     {
         return $user->id === $listing->by_user_id;
     }
-
     /**
      * Determine whether the user can permanently delete the model.
      *

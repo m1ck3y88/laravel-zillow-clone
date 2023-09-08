@@ -4,7 +4,7 @@
       <span class="font-bold">{{ listing.baths }}</span> ba <span
         class="text-gray-400"
       >| </span>
-      <span class="font-bold">{{ listing.area }}</span> m²
+      <span class="font-bold">{{ listing.area }}</span> ft²
     </div>
   </template>
   
